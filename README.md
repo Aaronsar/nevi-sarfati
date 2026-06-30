@@ -14,21 +14,26 @@ npm run dev
 
 Ouvrir [http://localhost:3000](http://localhost:3000).
 
-## Déploiement Vercel
+Sans Google Sheets configuré, les réponses sont enregistrées localement dans `data/rsvps/`.
 
-1. Connecter le dépôt GitHub à Vercel
-2. Activer **Vercel Blob** dans le dashboard du projet (Storage → Blob)
-3. La variable `BLOB_READ_WRITE_TOKEN` sera ajoutée automatiquement
+## Formulaire RSVP → Google Sheets
 
-## Formulaire RSVP
+Les réponses sont ajoutées dans [ce Google Sheet](https://docs.google.com/spreadsheets/d/13JQsuYOSTT62DN6xl5U_yx8cKBKkVeWIE360Ujj4Hwc).
 
-Les réponses sont enregistrées dans Vercel Blob (fichiers JSON privés).
+### Configuration (5 min)
 
-Champs :
-- **Famille** — nom de famille
-- **Présent** — Oui / Non
-- **Nombre de personnes** — affiché si présent = Oui
+1. Ouvrir le Google Sheet → **Extensions** → **Apps Script**
+2. Coller le contenu de `scripts/google-sheets-apps-script.gs`
+3. **Déployer** → **Nouveau déploiement** → **Application web**
+   - Exécuter en tant que : **Moi**
+   - Accès : **Tout le monde**
+4. Copier l'URL du déploiement
+5. Dans Vercel → **Settings** → **Environment Variables** :
+   - `GOOGLE_SHEETS_WEBHOOK_URL` = l'URL copiée
+6. Redéployer le site
+
+Colonnes enregistrées : **Date · Famille · Présent · Nombre de personnes**
 
 ## Domaine
 
-Configurer `nevi-sarfati.fr` dans Vercel → Settings → Domains après l'achat du nom de domaine.
+Configurer `nevi-sarfati.fr` dans Vercel → Settings → Domains.

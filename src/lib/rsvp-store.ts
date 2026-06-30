@@ -1,9 +1,8 @@
-import { put, list } from "@vercel/blob";
 import { mkdir, writeFile } from "fs/promises";
 import path from "path";
+import { appendRsvpToGoogleSheet } from "./google-sheets";
 import type { RsvpEntry, RsvpInput } from "./rsvp-schema";
 
-const BLOB_PREFIX = "rsvp/";
 const LOCAL_RSVP_DIR = path.join(process.cwd(), "data", "rsvps");
 
 function createEntry(data: RsvpInput): RsvpEntry {
@@ -23,44 +22,24 @@ async function saveToLocalFile(entry: RsvpEntry): Promise<void> {
   );
 }
 
-async function saveToBlob(entry: RsvpEntry): Promise<void> {
-  await put(`${BLOB_PREFIX}${entry.id}.json`, JSON.stringify(entry, null, 2), {
-    access: "private",
-    contentType: "application/json",
-    addRandomSuffix: false,
-  });
-}
-
 export async function saveRsvp(data: RsvpInput): Promise<RsvpEntry> {
   const entry = createEntry(data);
 
-  try {
-    await saveToBlob(entry);
+  const hasGoogle =
+    process.env.GOOGLE_SHEETS_WEBHOOK_URL ||
+    (process.env.GOOGLE_CLIENT_EMAIL && process.env.GOOGLE_PRIVATE_KEY);
+
+  if (hasGoogle) {
+    await appendRsvpToGoogleSheet(entry);
     return entry;
-  } catch (error) {
-    console.error("Blob save failed:", error);
-
-    if (process.env.NODE_ENV !== "production") {
-      await saveToLocalFile(entry);
-      return entry;
-    }
-
-    throw error;
-  }
-}
-
-export async function listRsvps(): Promise<RsvpEntry[]> {
-  const { blobs } = await list({ prefix: BLOB_PREFIX });
-  const entries: RsvpEntry[] = [];
-
-  for (const blob of blobs) {
-    const response = await fetch(blob.url);
-    if (response.ok) {
-      entries.push((await response.json()) as RsvpEntry);
-    }
   }
 
-  return entries.sort(
-    (a, b) => new Date(b.submittedAt).getTime() - new Date(a.submittedAt).getTime(),
+  if (process.env.NODE_ENV !== "production") {
+    await saveToLocalFile(entry);
+    return entry;
+  }
+
+  throw new Error(
+    "Google Sheets non configuré. Ajoutez GOOGLE_SHEETS_WEBHOOK_URL sur Vercel.",
   );
 }
