@@ -3,11 +3,12 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { RsvpForm } from "./rsvp-form";
 import { SunHero } from "./intro/sun-hero";
-import { NooNooTransition } from "./intro/noo-noo-transition";
 import { InvitationScene } from "./intro/invitation-scene";
 import { lockScroll, smoothScrollTo } from "@/lib/scroll-utils";
 
-type Phase = "sun" | "noo-noo" | "invitation" | "form";
+type Phase = "sun" | "invitation" | "form";
+
+const SUN_DISPLAY_MS = 3500;
 
 export default function InvitationPage() {
   const invitationRef = useRef<HTMLElement>(null);
@@ -16,20 +17,18 @@ export default function InvitationPage() {
   const [showText, setShowText] = useState(false);
 
   useEffect(() => {
-    lockScroll(phase === "sun" || phase === "noo-noo");
+    lockScroll(phase === "sun");
     return () => lockScroll(false);
   }, [phase]);
 
   useEffect(() => {
-    const timer = setTimeout(() => setPhase("noo-noo"), 3500);
+    const timer = setTimeout(() => {
+      setPhase("invitation");
+      setShowText(true);
+      lockScroll(false);
+      smoothScrollTo(invitationRef.current, { duration: 1800, delay: 200 });
+    }, SUN_DISPLAY_MS);
     return () => clearTimeout(timer);
-  }, []);
-
-  const handleNooNooComplete = useCallback(() => {
-    setPhase("invitation");
-    setShowText(true);
-    lockScroll(false);
-    smoothScrollTo(invitationRef.current, { duration: 2000, delay: 300 });
   }, []);
 
   const handleCtaComplete = useCallback(() => {
@@ -39,18 +38,14 @@ export default function InvitationPage() {
 
   return (
     <main className="relative">
-      {/* Section 1 — Soleil bébé Névi */}
       <section className="relative h-[100dvh] w-full shrink-0">
-        <SunHero active={phase === "sun" || phase === "noo-noo"} exiting={phase !== "sun"} />
-        <NooNooTransition active={phase === "noo-noo"} onComplete={handleNooNooComplete} />
+        <SunHero active={phase === "sun"} exiting={phase !== "sun"} />
       </section>
 
-      {/* Section 2 — Invitation Névitubbies */}
       <section ref={invitationRef} className="relative w-full shrink-0">
         <InvitationScene showText={showText} onCtaComplete={handleCtaComplete} />
       </section>
 
-      {/* Section 3 — Formulaire */}
       <section ref={formRef} id="rsvp" className="tubby-land relative w-full shrink-0 px-5 py-16 md:px-8 md:py-24">
         <div className="tubby-sky absolute inset-0 opacity-50" />
         <div className="relative z-10 mx-auto max-w-md">
