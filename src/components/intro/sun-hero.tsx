@@ -15,34 +15,32 @@ export function SunHero({ active, exiting }: SunHeroProps) {
       initial={{ opacity: 0 }}
       animate={{
         opacity: exiting ? 0 : active ? 1 : 0,
-        scale: exiting ? 1.04 : 1,
       }}
-      transition={{ duration: exiting ? 1.4 : 1, ease: [0.22, 1, 0.36, 1] }}
+      transition={{ duration: exiting ? 0.5 : 1, ease: [0.22, 1, 0.36, 1] }}
     >
+      {/* Mobile — 9:16 */}
       <motion.div
-        className="relative h-full w-full"
+        className="relative h-full w-full md:hidden"
         animate={active && !exiting ? { scale: [1, 1.006, 1] } : {}}
         transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
       >
-        {/* Mobile — 9:16 */}
         <Image
           src="/images/nevitubbies-hero-mobile.png"
           alt="Névi et les Névitubbies"
           fill
           priority
-          className="object-cover object-center md:hidden"
-          sizes="100vw"
-        />
-        {/* Desktop — 16:9 */}
-        <Image
-          src="/images/nevitubbies-hero-desktop.png"
-          alt="Névi et les Névitubbies"
-          fill
-          priority
-          className="hidden object-cover object-center md:block"
+          className="object-cover object-center"
           sizes="100vw"
         />
       </motion.div>
+
+      {/* Desktop — 16:9 plein écran */}
+      <motion.div
+        className="absolute inset-0 hidden bg-[#5eb3e8] bg-cover bg-center md:block"
+        style={{ backgroundImage: "url(/images/nevitubbies-hero-desktop.png)" }}
+        animate={active && !exiting ? { scale: [1, 1.008, 1] } : { scale: 1 }}
+        transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+      />
 
       <motion.div
         className="pointer-events-none absolute inset-0"

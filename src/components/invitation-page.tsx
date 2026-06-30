@@ -17,6 +17,7 @@ const FORM_SCROLL_MS = 500;
 
 export default function InvitationPage() {
   const invitationRef = useRef<HTMLElement>(null);
+  const invitationCardRef = useRef<HTMLDivElement>(null);
   const formRef = useRef<HTMLElement>(null);
   const thanksRef = useRef<HTMLElement>(null);
   const [phase, setPhase] = useState<Phase>("sun");
@@ -31,7 +32,11 @@ export default function InvitationPage() {
     const scrollTimer = setTimeout(() => {
       setPhase("invitation");
       lockScroll(false);
-      smoothScrollTo(invitationRef.current, { duration: SCROLL_MS, delay: 0 });
+      smoothScrollTo(invitationCardRef.current ?? invitationRef.current, {
+        duration: SCROLL_MS,
+        delay: 0,
+        offset: -24,
+      });
     }, HERO_MS);
 
     const textTimer = setTimeout(() => {
@@ -64,6 +69,7 @@ export default function InvitationPage() {
         <InvitationScene
           revealed={phase !== "sun"}
           showText={showText}
+          cardRef={invitationCardRef}
           onConfirmClick={handleConfirmClick}
         />
       </section>

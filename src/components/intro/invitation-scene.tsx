@@ -2,17 +2,19 @@
 
 import Image from "next/image";
 import { motion } from "framer-motion";
+import type { RefObject } from "react";
 import { InvitationLines } from "./invitation-lines";
 
 type InvitationSceneProps = {
   revealed: boolean;
   showText: boolean;
+  cardRef?: RefObject<HTMLDivElement | null>;
   onConfirmClick?: () => void;
 };
 
-export function InvitationScene({ revealed, showText, onConfirmClick }: InvitationSceneProps) {
+export function InvitationScene({ revealed, showText, cardRef, onConfirmClick }: InvitationSceneProps) {
   return (
-    <div className="tubby-land relative flex min-h-[100dvh] items-start justify-center overflow-hidden px-3 pt-8 pb-12 md:items-center md:px-6 md:py-16">
+    <div className="tubby-land relative flex min-h-[100dvh] items-start justify-center overflow-hidden px-3 pt-8 pb-12 md:min-h-0 md:px-6 md:py-10">
       <div className="tubby-hills absolute inset-0" />
       <div className="tubby-sky absolute inset-0" />
 
@@ -29,6 +31,7 @@ export function InvitationScene({ revealed, showText, onConfirmClick }: Invitati
       ))}
 
       <motion.div
+        ref={cardRef}
         className="relative z-10 w-full max-w-sm md:max-w-md"
         initial={false}
         animate={
