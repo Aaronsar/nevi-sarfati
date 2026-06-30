@@ -19,9 +19,11 @@ export default function InvitationPage() {
   const invitationRef = useRef<HTMLElement>(null);
   const invitationCardRef = useRef<HTMLDivElement>(null);
   const formRef = useRef<HTMLElement>(null);
+  const formContainerRef = useRef<HTMLDivElement>(null);
   const thanksRef = useRef<HTMLElement>(null);
   const [phase, setPhase] = useState<Phase>("sun");
   const [showText, setShowText] = useState(false);
+  const [formRevealed, setFormRevealed] = useState(false);
 
   useEffect(() => {
     lockScroll(phase === "sun");
@@ -49,7 +51,29 @@ export default function InvitationPage() {
     };
   }, []);
 
+  // Afficher le formulaire si l'utilisateur scrolle jusqu'à la section RSVP
+  useEffect(() => {
+    if (formRevealed || phase === "thanks" || phase === "sun") return;
+
+    const el = formContainerRef.current;
+    if (!el) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry?.isIntersecting) {
+          setFormRevealed(true);
+          setPhase((p) => (p === "thanks" ? p : "form"));
+        }
+      },
+      { threshold: 0.2 },
+    );
+
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [formRevealed, phase]);
+
   const handleConfirmClick = useCallback(() => {
+    setFormRevealed(true);
     setPhase("form");
     smoothScrollTo(formRef.current, { duration: FORM_SCROLL_MS, delay: 0, offset: -16 });
   }, []);
@@ -77,8 +101,8 @@ export default function InvitationPage() {
       <section ref={formRef} id="rsvp" className="tubby-land relative w-full shrink-0 px-5 py-16 md:px-8 md:py-24">
         <div className="tubby-sky absolute inset-0 opacity-50" />
         <div className="relative z-10 mx-auto max-w-md">
-          <div className="mb-10 flex justify-center">
-            <RsvpForm visible={phase === "form"} onSuccess={handleRsvpSuccess} />
+          <div ref={formContainerRef} className="mb-10 flex justify-center">
+            <RsvpForm visible={formRevealed} onSuccess={handleRsvpSuccess} />
           </div>
 
           {phase !== "thanks" && (
