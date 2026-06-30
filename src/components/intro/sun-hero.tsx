@@ -24,12 +24,22 @@ export function SunHero({ active, exiting }: SunHeroProps) {
         animate={active && !exiting ? { scale: [1, 1.006, 1] } : {}}
         transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
       >
+        {/* Mobile — 9:16 */}
         <Image
           src="/images/nevitubbies-hero-mobile.png"
           alt="Névi et les Névitubbies"
           fill
           priority
-          className="object-cover object-center"
+          className="object-cover object-center md:hidden"
+          sizes="100vw"
+        />
+        {/* Desktop — 16:9 */}
+        <Image
+          src="/images/nevitubbies-hero-desktop.png"
+          alt="Névi et les Névitubbies"
+          fill
+          priority
+          className="hidden object-cover object-center md:block"
           sizes="100vw"
         />
       </motion.div>
