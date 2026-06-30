@@ -48,20 +48,18 @@ export function RsvpForm() {
       <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
-        className="gold-border rounded-2xl bg-white/70 p-8 text-center backdrop-blur-sm md:p-10"
+        className="tubby-form rounded-3xl p-8 text-center md:p-10"
       >
         <motion.div
           initial={{ scale: 0 }}
           animate={{ scale: 1 }}
           transition={{ type: "spring", delay: 0.2 }}
-          className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gold/20"
+          className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-[#f5d020]/30 text-3xl"
         >
-          <svg className="h-8 w-8 text-gold-dark" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-          </svg>
+          🎉
         </motion.div>
-        <h3 className="mb-2 text-2xl font-semibold text-gold-dark">Merci !</h3>
-        <p className="text-text-muted text-lg">
+        <h3 className="mb-2 text-2xl font-bold text-[#6b4c9a]">Eh-oh ! Merci !</h3>
+        <p className="text-lg text-[#3d6b35]">
           Votre réponse a bien été enregistrée.
           <br />
           {present === "oui"
@@ -79,9 +77,9 @@ export function RsvpForm() {
       viewport={{ once: true }}
       transition={{ duration: 0.6 }}
       onSubmit={handleSubmit}
-      className="gold-border w-full max-w-md rounded-2xl bg-white/70 p-6 backdrop-blur-sm md:p-8"
+      className="tubby-form w-full max-w-md rounded-3xl p-6 md:p-8"
     >
-      <h3 className="mb-6 text-center text-2xl font-semibold tracking-wide text-gold-dark md:text-3xl">
+      <h3 className="mb-6 text-center text-2xl font-bold text-[#6b4c9a] md:text-3xl">
         Confirmez votre présence
       </h3>
 
@@ -97,7 +95,7 @@ export function RsvpForm() {
             value={famille}
             onChange={(e) => setFamille(e.target.value)}
             placeholder="Votre nom de famille"
-            className="w-full rounded-lg border border-champagne bg-cream/50 px-4 py-3 text-lg text-text-dark transition-colors outline-none focus:border-gold focus:ring-2 focus:ring-gold/20"
+            className="w-full rounded-xl border-2 border-[#e8d5f5] bg-white px-4 py-3 text-lg text-[#3d3428] outline-none focus:border-[#9b59b6] focus:ring-2 focus:ring-[#9b59b6]/20"
           />
         </div>
 
@@ -109,10 +107,10 @@ export function RsvpForm() {
             {(["oui", "non"] as const).map((option) => (
               <label
                 key={option}
-                className={`flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-lg border px-4 py-3 text-lg font-medium transition-all ${
+                className={`flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-xl border-2 px-4 py-3 text-lg font-bold transition-all ${
                   present === option
-                    ? "border-gold bg-gold/10 text-gold-dark"
-                    : "border-champagne bg-cream/30 text-text-muted hover:border-gold-light"
+                    ? "border-[#9b59b6] bg-[#9b59b6]/10 text-[#6b4c9a]"
+                    : "border-[#e8d5f5] bg-white text-[#6b4c9a]/60 hover:border-[#9b59b6]/40"
                 }`}
               >
                 <input
@@ -153,7 +151,7 @@ export function RsvpForm() {
                 value={nombrePersonnes}
                 onChange={(e) => setNombrePersonnes(e.target.value)}
                 placeholder="Ex : 2"
-                className="w-full rounded-lg border border-champagne bg-cream/50 px-4 py-3 text-lg text-text-dark transition-colors outline-none focus:border-gold focus:ring-2 focus:ring-gold/20"
+                className="w-full rounded-xl border-2 border-[#e8d5f5] bg-white px-4 py-3 text-lg text-[#3d3428] outline-none focus:border-[#9b59b6] focus:ring-2 focus:ring-[#9b59b6]/20"
               />
             </motion.div>
           )}
@@ -174,7 +172,7 @@ export function RsvpForm() {
           disabled={formState === "loading"}
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
-          className="w-full rounded-lg bg-gradient-to-r from-gold-dark via-gold to-gold-dark px-6 py-3.5 text-lg font-semibold tracking-wide text-white shadow-lg shadow-gold/20 transition-opacity disabled:opacity-60"
+          className="w-full rounded-xl bg-gradient-to-r from-[#9b59b6] via-[#e05090] to-[#9b59b6] px-6 py-3.5 text-lg font-bold text-white shadow-lg transition-opacity disabled:opacity-60"
         >
           {formState === "loading" ? "Envoi en cours..." : "Envoyer ma réponse"}
         </motion.button>

@@ -1,70 +1,82 @@
 "use client";
 
 import { useRef } from "react";
+import Image from "next/image";
 import { motion, type Variants } from "framer-motion";
+import { NevitubbiesBlock } from "./nevitubbies-block";
 
 type LineConfig = {
-  text: string;
-  className: string;
+  id: string;
+  type: "text" | "nevitubbies";
+  text?: string;
+  className?: string;
   delay: number;
   duration: number;
-  variant: "rise" | "fade" | "scale" | "slide" | "reveal";
+  variant?: "rise" | "fade" | "scale" | "slide" | "reveal";
   spacing?: string;
 };
 
 const LINES: LineConfig[] = [
   {
-    text: "Aaron et Neorah Sarfati",
-    className: "text-2xl md:text-3xl font-semibold tracking-wide text-gold-dark",
+    id: "hosts",
+    type: "text",
+    text: "Aaron et Néorah Sarfati",
+    className: "text-2xl md:text-3xl font-bold text-[#6b4c9a]",
     delay: 0,
-    duration: 1.1,
+    duration: 1,
     variant: "rise",
   },
   {
-    text: "vous invitent",
-    className: "text-base md:text-lg font-light italic text-gold/80",
-    delay: 0.7,
-    duration: 0.55,
-    variant: "fade",
-    spacing: "-mt-0.5",
+    id: "nevitubbies",
+    type: "nevitubbies",
+    delay: 0.9,
+    duration: 1,
   },
   {
-    text: "au Pidyon Haben de leur fils",
-    className: "text-xs md:text-sm font-medium tracking-[0.28em] text-gold-dark/70 uppercase",
-    delay: 1.3,
-    duration: 0.75,
-    variant: "fade",
-    spacing: "mt-4 mb-1",
-  },
-  {
-    text: "Névi Baroukh Sarfati",
-    className: "text-4xl md:text-6xl font-bold leading-tight gold-gradient-text",
-    delay: 2.6,
-    duration: 1.3,
-    variant: "scale",
-    spacing: "my-3 md:my-5",
-  },
-  {
-    text: "le mercredi 8 juillet à 20h",
-    className: "text-xl md:text-2xl font-semibold tracking-wide text-gold-dark",
-    delay: 4.2,
+    id: "invite",
+    type: "text",
+    text: "sont heureux de vous inviter au Pydion de leur fils et petit-fils",
+    className: "text-sm md:text-base font-medium leading-relaxed text-[#3d6b35] px-2",
+    delay: 2.4,
     duration: 0.9,
-    variant: "slide",
-    spacing: "mt-4",
+    variant: "fade",
+    spacing: "mt-2 mb-1",
   },
   {
+    id: "nevi",
+    type: "text",
+    text: "Névi Sarfati",
+    className: "text-4xl md:text-6xl font-extrabold leading-tight tubby-name-text",
+    delay: 3.6,
+    duration: 1.2,
+    variant: "scale",
+    spacing: "my-3 md:my-4",
+  },
+  {
+    id: "date",
+    type: "text",
+    text: "le mercredi 8 juillet à 20h",
+    className: "text-xl md:text-2xl font-bold text-[#6b4c9a]",
+    delay: 5,
+    duration: 0.85,
+    variant: "slide",
+    spacing: "mt-2",
+  },
+  {
+    id: "cta",
+    type: "text",
     text: "Confirmez votre présence",
-    className: "text-[11px] md:text-xs font-semibold tracking-[0.35em] text-gold uppercase",
-    delay: 5.4,
+    className: "text-xs md:text-sm font-bold tracking-[0.3em] text-[#e05090] uppercase",
+    delay: 6.2,
     duration: 0.7,
     variant: "reveal",
     spacing: "mt-6",
   },
 ];
 
-const VARIANTS: Record<LineConfig["variant"], Variants> = {
+const VARIANTS: Record<NonNullable<LineConfig["variant"]>, Variants> = {
   rise: {
-    hidden: { opacity: 0, y: 36, filter: "blur(8px)" },
+    hidden: { opacity: 0, y: 30, filter: "blur(6px)" },
     visible: { opacity: 1, y: 0, filter: "blur(0px)" },
   },
   fade: {
@@ -72,16 +84,16 @@ const VARIANTS: Record<LineConfig["variant"], Variants> = {
     visible: { opacity: 1 },
   },
   scale: {
-    hidden: { opacity: 0, scale: 0.82, y: 24, filter: "blur(4px)" },
-    visible: { opacity: 1, scale: 1, y: 0, filter: "blur(0px)" },
+    hidden: { opacity: 0, scale: 0.75, y: 20 },
+    visible: { opacity: 1, scale: 1, y: 0 },
   },
   slide: {
-    hidden: { opacity: 0, x: -28, filter: "blur(4px)" },
-    visible: { opacity: 1, x: 0, filter: "blur(0px)" },
+    hidden: { opacity: 0, x: -24 },
+    visible: { opacity: 1, x: 0 },
   },
   reveal: {
-    hidden: { opacity: 0, letterSpacing: "0.6em", y: 8 },
-    visible: { opacity: 1, letterSpacing: "0.35em", y: 0 },
+    hidden: { opacity: 0, letterSpacing: "0.5em", y: 6 },
+    visible: { opacity: 1, letterSpacing: "0.3em", y: 0 },
   },
 };
 
@@ -105,35 +117,46 @@ export function InvitationLines({ visible, onCtaComplete }: InvitationLinesProps
       animate={{ opacity: 1 }}
       transition={{ duration: 0.3 }}
     >
-      {LINES.map((line, i) => (
-        <motion.p
-          key={line.text}
-          className={`${line.className} ${line.spacing ?? ""}`}
-          variants={VARIANTS[line.variant]}
-          initial="hidden"
-          animate="visible"
-          transition={{
-            duration: line.duration,
-            delay: line.delay,
-            ease: [0.22, 1, 0.36, 1],
-          }}
-          onAnimationComplete={() => {
-            if (i === LINES.length - 1 && !ctaFired.current) {
-              ctaFired.current = true;
-              onCtaComplete?.();
-            }
-          }}
-        >
-          {line.text}
-        </motion.p>
-      ))}
+      {LINES.map((line, i) => {
+        if (line.type === "nevitubbies") {
+          return <NevitubbiesBlock key={line.id} delay={line.delay} />;
+        }
+
+        return (
+          <motion.p
+            key={line.id}
+            className={`${line.className} ${line.spacing ?? ""}`}
+            variants={VARIANTS[line.variant!]}
+            initial="hidden"
+            animate="visible"
+            transition={{
+              duration: line.duration,
+              delay: line.delay,
+              ease: [0.22, 1, 0.36, 1],
+            }}
+            onAnimationComplete={() => {
+              if (i === LINES.length - 1 && !ctaFired.current) {
+                ctaFired.current = true;
+                onCtaComplete?.();
+              }
+            }}
+          >
+            {line.text}
+          </motion.p>
+        );
+      })}
 
       <motion.div
-        className="mt-6 h-px w-16 bg-gradient-to-r from-transparent via-gold/60 to-transparent md:w-24"
-        initial={{ scaleX: 0, opacity: 0 }}
-        animate={{ scaleX: 1, opacity: 1 }}
-        transition={{ delay: dividerDelay, duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
-      />
+        className="mt-5 flex items-center gap-2"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: dividerDelay }}
+      >
+        <span className="h-3 w-3 rounded-full bg-[#9b59b6]" />
+        <span className="h-3 w-3 rounded-full bg-[#f5d020]" />
+        <span className="h-3 w-3 rounded-full bg-[#3d6b35]" />
+        <span className="h-3 w-3 rounded-full bg-[#e05090]" />
+      </motion.div>
     </motion.div>
   );
 }

@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
-import { Cormorant_Garamond, Noto_Serif_Hebrew } from "next/font/google";
+import { Fredoka, Noto_Serif_Hebrew } from "next/font/google";
 import "./globals.css";
 
-const cormorant = Cormorant_Garamond({
-  variable: "--font-cormorant",
+const fredoka = Fredoka({
+  variable: "--font-fredoka",
   subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700"],
+  weight: ["400", "500", "600", "700"],
 });
 
 const notoHebrew = Noto_Serif_Hebrew({
@@ -16,17 +16,16 @@ const notoHebrew = Noto_Serif_Hebrew({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://nevi-sarfati.fr"),
-  title: "Pidyon Haben de Névi Baroukh Sarfati",
+  title: "Pydion de Névi Sarfati — Les Névitubbies vous invitent !",
   description:
-    "Vous êtes invités au Pidyon Haben de Névi Baroukh Sarfati — Mercredi 8 juillet, à partir de 20h, 10 rue de Groslay, Montmorency.",
+    "Aaron, Néorah et les Névitubbies vous invitent au Pydion de Névi — Mercredi 8 juillet à 20h, Montmorency.",
   openGraph: {
-    title: "Pidyon Haben de Névi Baroukh Sarfati",
-    description:
-      "Mercredi 8 juillet · À partir de 20h · 10 rue de Groslay, Montmorency",
+    title: "Pydion de Névi Sarfati",
+    description: "Mercredi 8 juillet · 20h · Montmorency",
     siteName: "nevi-sarfati.fr",
     locale: "fr_FR",
     type: "website",
-    images: [{ url: "/images/baby.png", width: 800, height: 1200, alt: "Névi Baroukh Sarfati" }],
+    images: [{ url: "/images/nevitubbies.png", width: 800, height: 600, alt: "Les Névitubbies" }],
   },
 };
 
@@ -36,7 +35,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="fr" className={`${cormorant.variable} ${notoHebrew.variable} h-full antialiased`}>
+    <html lang="fr" className={`${fredoka.variable} ${notoHebrew.variable} h-full antialiased`}>
       <body className="min-h-full">{children}</body>
     </html>
   );

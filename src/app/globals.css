@@ -20,7 +20,7 @@
   --color-champagne: var(--champagne);
   --color-text-dark: var(--text-dark);
   --color-text-muted: var(--text-muted);
-  --font-serif: var(--font-cormorant);
+  --font-serif: var(--font-fredoka);
   --font-hebrew: var(--font-noto-hebrew);
 }
 
@@ -44,9 +44,9 @@ html {
 }
 
 body {
-  background: var(--cream);
+  background: #87ceeb;
   color: var(--text-dark);
-  font-family: var(--font-cormorant), Georgia, serif;
+  font-family: var(--font-fredoka), system-ui, sans-serif;
   overflow-x: hidden;
 }
 
@@ -163,4 +163,41 @@ body {
     radial-gradient(circle at 20% 30%, rgba(201, 162, 39, 0.04) 0%, transparent 50%),
     radial-gradient(circle at 80% 70%, rgba(232, 213, 163, 0.06) 0%, transparent 40%);
   opacity: 0.9;
+}
+
+/* Teletubbies / Névitubbies theme */
+.tubby-sky {
+  background: linear-gradient(180deg, #87ceeb 0%, #b8e4f9 55%, #a8d8a0 100%);
+}
+
+.tubby-hills {
+  background:
+    radial-gradient(ellipse 120% 40% at 50% 100%, #5cb85c 0%, #3d9e3d 40%, transparent 70%),
+    radial-gradient(ellipse 80% 30% at 20% 95%, #6ecf6e 0%, transparent 60%),
+    radial-gradient(ellipse 70% 25% at 80% 92%, #4caf50 0%, transparent 55%);
+}
+
+.tubby-land {
+  background: linear-gradient(180deg, #87ceeb 0%, #b8e4f9 40%, #7ec87e 100%);
+}
+
+.tubby-card {
+  background: rgba(255, 255, 255, 0.92);
+  border: 4px solid white;
+  box-shadow:
+    0 16px 48px rgba(0, 0, 0, 0.12),
+    0 0 0 4px rgba(155, 89, 182, 0.15);
+}
+
+.tubby-name-text {
+  background: linear-gradient(135deg, #9b59b6, #e05090, #f5d020);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.tubby-form {
+  background: rgba(255, 255, 255, 0.95);
+  border: 4px solid white;
+  box-shadow: 0 12px 40px rgba(107, 76, 154, 0.15);
 }
