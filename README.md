@@ -1,36 +1,34 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Pidyon Haben — Névi Baroukh Sarfati
 
-## Getting Started
+Site d'invitation pour le Pidyon Haben de Névi Baroukh Sarfati.
 
-First, run the development server:
+**Date :** Mercredi 8 juillet · À partir de 20h  
+**Lieu :** 10 rue de Groslay, Montmorency, 95160
+
+## Développement local
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Ouvrir [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Déploiement Vercel
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+1. Connecter le dépôt GitHub à Vercel
+2. Activer **Vercel Blob** dans le dashboard du projet (Storage → Blob)
+3. La variable `BLOB_READ_WRITE_TOKEN` sera ajoutée automatiquement
 
-## Learn More
+## Formulaire RSVP
 
-To learn more about Next.js, take a look at the following resources:
+Les réponses sont enregistrées dans Vercel Blob (fichiers JSON privés).
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Champs :
+- **Famille** — nom de famille
+- **Présent** — Oui / Non
+- **Nombre de personnes** — affiché si présent = Oui
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Domaine
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Configurer `nevi-sarfati.fr` dans Vercel → Settings → Domains après l'achat du nom de domaine.
