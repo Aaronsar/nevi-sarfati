@@ -1,90 +1,73 @@
 "use client";
 
-import { useCallback, useState } from "react";
-import { motion } from "framer-motion";
-import {
-  StarOfDavid,
-  OliveBranch,
-  SynagogueSilhouette,
-  TorahScroll,
-} from "./decorations";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { AnimatePresence } from "framer-motion";
+import { StarOfDavid } from "./decorations";
 import { RsvpForm } from "./rsvp-form";
-import { IntroSequence, useAutoScroll } from "./intro/intro-sequence";
+import { SunHero } from "./intro/sun-hero";
+import { BloomEffect } from "./intro/bloom-effect";
+import { InvitationScene } from "./intro/invitation-scene";
+import { lockScroll, smoothScrollTo } from "@/lib/scroll-utils";
+
+type Phase = "sun" | "bloom" | "invitation" | "form";
 
 export default function InvitationPage() {
-  const { formRef, introDone, setIntroDone, scrollToForm } = useAutoScroll();
-  const [showContent, setShowContent] = useState(false);
+  const invitationRef = useRef<HTMLElement>(null);
+  const formRef = useRef<HTMLElement>(null);
+  const [phase, setPhase] = useState<Phase>("sun");
+  const [showText, setShowText] = useState(false);
 
-  const handleIntroComplete = useCallback(() => {
-    setIntroDone(true);
-    setShowContent(true);
-  }, [setIntroDone]);
+  useEffect(() => {
+    lockScroll(phase === "sun" || phase === "bloom");
+    return () => lockScroll(false);
+  }, [phase]);
+
+  useEffect(() => {
+    const timers = [
+      setTimeout(() => setPhase("bloom"), 3500),
+      setTimeout(() => {
+        setPhase("invitation");
+        setShowText(true);
+        lockScroll(false);
+        smoothScrollTo(invitationRef.current, { duration: 2200, delay: 200 });
+      }, 4800),
+    ];
+    return () => timers.forEach(clearTimeout);
+  }, []);
+
+  const handleCtaComplete = useCallback(() => {
+    setPhase("form");
+    smoothScrollTo(formRef.current, { duration: 2600, delay: 600, offset: -24 });
+  }, []);
 
   return (
-    <>
-      {!introDone && (
-        <IntroSequence
-          onComplete={handleIntroComplete}
-          onScrollToForm={scrollToForm}
-        />
-      )}
+    <main className="relative">
+      {/* Section 1 — Soleil Teletubbies */}
+      <section className="relative h-[100dvh] w-full shrink-0">
+        <SunHero active={phase === "sun" || phase === "bloom"} exiting={phase !== "sun"} />
+        <AnimatePresence>{phase === "bloom" && <BloomEffect />}</AnimatePresence>
+      </section>
 
-      <main
-        className={`cloud-bg relative min-h-screen overflow-hidden transition-opacity duration-1000 ${
-          showContent ? "opacity-100" : "opacity-0"
-        }`}
+      {/* Section 2 — Carte d'invitation */}
+      <section ref={invitationRef} className="relative w-full shrink-0">
+        <InvitationScene showText={showText} onCtaComplete={handleCtaComplete} />
+      </section>
+
+      {/* Section 3 — Formulaire (même page, scroll naturel) */}
+      <section
+        ref={formRef}
+        id="rsvp"
+        className="invitation-warm-bg relative w-full shrink-0 px-5 py-16 md:px-8 md:py-24"
       >
-        <StarOfDavid className="absolute top-8 right-6 h-10 w-10 text-gold opacity-40 md:top-12 md:right-12 md:h-14 md:w-14" />
-        <OliveBranch className="absolute bottom-32 left-0 h-20 w-32 opacity-40 md:h-28 md:w-44" />
-        <OliveBranch className="absolute right-0 bottom-16 h-16 w-28 opacity-30 md:h-24 md:w-40" flip />
-        <SynagogueSilhouette className="absolute top-32 right-4 h-28 w-24 opacity-30 md:top-40 md:right-16 md:h-40 md:w-32" />
-        <TorahScroll className="absolute bottom-48 left-4 h-20 w-16 opacity-30 md:bottom-56 md:left-12 md:h-28 md:w-20" />
-
-        <div className="relative z-10 mx-auto max-w-2xl px-5 py-16 md:px-8 md:py-24">
-          {/* Spacer so auto-scroll lands nicely */}
-          <div className="h-[30vh]" />
-
-          {/* Hebrew accent */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={showContent ? { opacity: 1, y: 0 } : {}}
-            transition={{ delay: 0.3, duration: 0.8 }}
-            className="mb-12 text-center"
-          >
-            <p className="font-hebrew text-lg tracking-widest text-gold-dark md:text-xl">ב״ה</p>
-            <p className="mt-2 font-hebrew text-xl text-gold-dark md:text-2xl">אני לדודי ודודי לי</p>
-            <motion.span
-              animate={{ scale: [1, 1.2, 1] }}
-              transition={{ duration: 2, repeat: Infinity }}
-              className="mt-2 inline-block text-gold"
-            >
-              ♥
-            </motion.span>
-          </motion.div>
-
-          {/* RSVP Form */}
-          <motion.div
-            ref={formRef}
-            initial={{ opacity: 0, y: 60 }}
-            animate={showContent ? { opacity: 1, y: 0 } : {}}
-            transition={{ delay: 0.6, duration: 1 }}
-            className="flex justify-center"
-            id="rsvp"
-          >
+        <div className="relative z-10 mx-auto max-w-md">
+          <div className="mb-10 flex justify-center">
             <RsvpForm />
-          </motion.div>
+          </div>
 
-          {/* Location details */}
-          <motion.div
-            initial={{ opacity: 0, y: 40 }}
-            animate={showContent ? { opacity: 1, y: 0 } : {}}
-            transition={{ delay: 1, duration: 0.8 }}
-            className="mt-14 space-y-6 text-center md:mt-20"
-          >
+          <div className="space-y-6 text-center">
             <div className="mx-auto h-px w-24 bg-gradient-to-r from-transparent via-gold to-transparent" />
-
             <div>
-              <p className="text-sm tracking-[0.25em] text-text-muted uppercase">Lieu</p>
+              <p className="text-sm tracking-[0.25em] text-gold-dark/70 uppercase">Lieu</p>
               <a
                 href="https://maps.google.com/?q=10+rue+de+Groslay,+Montmorency,+95160"
                 target="_blank"
@@ -100,21 +83,15 @@ export default function InvitationPage() {
                 <span>Montmorency, 95160</span>
               </a>
             </div>
-
             <div className="mx-auto h-px w-24 bg-gradient-to-r from-transparent via-gold to-transparent" />
-          </motion.div>
+          </div>
 
-          <motion.footer
-            initial={{ opacity: 0 }}
-            animate={showContent ? { opacity: 1 } : {}}
-            transition={{ delay: 1.4 }}
-            className="mt-16 pb-8 text-center text-sm text-text-muted"
-          >
+          <footer className="mt-16 pb-8 text-center text-sm text-gold-dark/50">
             <StarOfDavid className="mx-auto mb-3 h-6 w-6 text-gold opacity-40" />
             <p>nevi-sarfati.fr</p>
-          </motion.footer>
+          </footer>
         </div>
-      </main>
-    </>
+      </section>
+    </main>
   );
 }

@@ -14,11 +14,12 @@ import { InvitationLines } from "./invitation-lines";
 
 type InvitationSceneProps = {
   showText: boolean;
+  onCtaComplete?: () => void;
 };
 
-export function InvitationScene({ showText }: InvitationSceneProps) {
+export function InvitationScene({ showText, onCtaComplete }: InvitationSceneProps) {
   return (
-    <div className="invitation-scene absolute inset-0 flex items-center justify-center overflow-hidden px-3 py-6 md:px-6">
+    <div className="invitation-scene relative flex min-h-[100dvh] items-center justify-center overflow-hidden px-3 py-10 md:px-6 md:py-16">
       {/* Fond chaleureux animé */}
       <div className="invitation-warm-bg absolute inset-0" />
       <SunRays />
@@ -110,7 +111,7 @@ export function InvitationScene({ showText }: InvitationSceneProps) {
             />
 
             {/* Texte d'invitation */}
-            <InvitationLines visible={showText} />
+            <InvitationLines visible={showText} onCtaComplete={onCtaComplete} />
 
             {/* Adresse discrète */}
             <motion.p

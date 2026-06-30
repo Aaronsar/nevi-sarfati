@@ -1,5 +1,6 @@
 "use client";
 
+import { useRef } from "react";
 import { motion, type Variants } from "framer-motion";
 
 type LineConfig = {
@@ -86,9 +87,12 @@ const VARIANTS: Record<LineConfig["variant"], Variants> = {
 
 type InvitationLinesProps = {
   visible: boolean;
+  onCtaComplete?: () => void;
 };
 
-export function InvitationLines({ visible }: InvitationLinesProps) {
+export function InvitationLines({ visible, onCtaComplete }: InvitationLinesProps) {
+  const ctaFired = useRef(false);
+
   if (!visible) return null;
 
   const lastLine = LINES[LINES.length - 1];
@@ -101,7 +105,7 @@ export function InvitationLines({ visible }: InvitationLinesProps) {
       animate={{ opacity: 1 }}
       transition={{ duration: 0.3 }}
     >
-      {LINES.map((line) => (
+      {LINES.map((line, i) => (
         <motion.p
           key={line.text}
           className={`${line.className} ${line.spacing ?? ""}`}
@@ -112,6 +116,12 @@ export function InvitationLines({ visible }: InvitationLinesProps) {
             duration: line.duration,
             delay: line.delay,
             ease: [0.22, 1, 0.36, 1],
+          }}
+          onAnimationComplete={() => {
+            if (i === LINES.length - 1 && !ctaFired.current) {
+              ctaFired.current = true;
+              onCtaComplete?.();
+            }
           }}
         >
           {line.text}
@@ -127,5 +137,3 @@ export function InvitationLines({ visible }: InvitationLinesProps) {
     </motion.div>
   );
 }
-
-export const INVITATION_TEXT_DURATION_MS = 7200;
