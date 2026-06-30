@@ -79,8 +79,8 @@ export function RsvpForm() {
       onSubmit={handleSubmit}
       className="tubby-form w-full max-w-md rounded-3xl p-6 md:p-8"
     >
-      <h3 className="mb-6 text-center text-2xl font-bold text-[#6b4c9a] md:text-3xl">
-        Confirmez votre présence
+      <h3 className="mb-6 text-center text-xl font-bold text-[#6b4c9a] md:text-2xl">
+        Votre réponse
       </h3>
 
       <div className="space-y-5">

@@ -1,161 +1,108 @@
 "use client";
 
-import { useRef } from "react";
-import Image from "next/image";
 import { motion, type Variants } from "framer-motion";
 import { NevitubbiesBlock } from "./nevitubbies-block";
 
-type LineConfig = {
-  id: string;
-  type: "text" | "nevitubbies";
-  text?: string;
-  className?: string;
-  delay: number;
-  duration: number;
-  variant?: "rise" | "fade" | "scale" | "slide" | "reveal";
-  spacing?: string;
+const container: Variants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: { staggerChildren: 0.55, delayChildren: 0.15 },
+  },
 };
 
-const LINES: LineConfig[] = [
-  {
-    id: "hosts",
-    type: "text",
-    text: "Aaron et Néorah Sarfati",
-    className: "text-2xl md:text-3xl font-bold text-[#6b4c9a]",
-    delay: 0,
-    duration: 1,
-    variant: "rise",
+const item: Variants = {
+  hidden: { opacity: 0, y: 28, filter: "blur(4px)" },
+  visible: {
+    opacity: 1,
+    y: 0,
+    filter: "blur(0px)",
+    transition: { duration: 0.65, ease: [0.22, 1, 0.36, 1] },
   },
-  {
-    id: "nevitubbies",
-    type: "nevitubbies",
-    delay: 0.9,
-    duration: 1,
-  },
-  {
-    id: "invite",
-    type: "text",
-    text: "sont heureux de vous inviter au Pydion de leur fils et petit-fils",
-    className: "text-sm md:text-base font-medium leading-relaxed text-[#3d6b35] px-2",
-    delay: 2.4,
-    duration: 0.9,
-    variant: "fade",
-    spacing: "mt-2 mb-1",
-  },
-  {
-    id: "nevi",
-    type: "text",
-    text: "Névi Sarfati",
-    className: "text-4xl md:text-6xl font-extrabold leading-tight tubby-name-text",
-    delay: 3.6,
-    duration: 1.2,
-    variant: "scale",
-    spacing: "my-3 md:my-4",
-  },
-  {
-    id: "date",
-    type: "text",
-    text: "le mercredi 8 juillet à 20h",
-    className: "text-xl md:text-2xl font-bold text-[#6b4c9a]",
-    delay: 5,
-    duration: 0.85,
-    variant: "slide",
-    spacing: "mt-2",
-  },
-  {
-    id: "cta",
-    type: "text",
-    text: "Confirmez votre présence",
-    className: "text-xs md:text-sm font-bold tracking-[0.3em] text-[#e05090] uppercase",
-    delay: 6.2,
-    duration: 0.7,
-    variant: "reveal",
-    spacing: "mt-6",
-  },
-];
+};
 
-const VARIANTS: Record<NonNullable<LineConfig["variant"]>, Variants> = {
-  rise: {
-    hidden: { opacity: 0, y: 30, filter: "blur(6px)" },
-    visible: { opacity: 1, y: 0, filter: "blur(0px)" },
-  },
-  fade: {
-    hidden: { opacity: 0 },
-    visible: { opacity: 1 },
-  },
-  scale: {
-    hidden: { opacity: 0, scale: 0.75, y: 20 },
-    visible: { opacity: 1, scale: 1, y: 0 },
-  },
-  slide: {
-    hidden: { opacity: 0, x: -24 },
-    visible: { opacity: 1, x: 0 },
-  },
-  reveal: {
-    hidden: { opacity: 0, letterSpacing: "0.5em", y: 6 },
-    visible: { opacity: 1, letterSpacing: "0.3em", y: 0 },
+const nameItem: Variants = {
+  hidden: { opacity: 0, scale: 0.88, y: 20 },
+  visible: {
+    opacity: 1,
+    scale: 1,
+    y: 0,
+    transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] },
   },
 };
 
 type InvitationLinesProps = {
   visible: boolean;
-  onCtaComplete?: () => void;
+  onConfirmClick?: () => void;
 };
 
-export function InvitationLines({ visible, onCtaComplete }: InvitationLinesProps) {
-  const ctaFired = useRef(false);
-
+export function InvitationLines({ visible, onConfirmClick }: InvitationLinesProps) {
   if (!visible) return null;
-
-  const lastLine = LINES[LINES.length - 1];
-  const dividerDelay = lastLine.delay + lastLine.duration + 0.3;
 
   return (
     <motion.div
       className="flex flex-col items-center text-center"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.3 }}
+      variants={container}
+      initial="hidden"
+      animate="visible"
     >
-      {LINES.map((line, i) => {
-        if (line.type === "nevitubbies") {
-          return <NevitubbiesBlock key={line.id} delay={line.delay} />;
-        }
-
-        return (
-          <motion.p
-            key={line.id}
-            className={`${line.className} ${line.spacing ?? ""}`}
-            variants={VARIANTS[line.variant!]}
-            initial="hidden"
-            animate="visible"
-            transition={{
-              duration: line.duration,
-              delay: line.delay,
-              ease: [0.22, 1, 0.36, 1],
-            }}
-            onAnimationComplete={() => {
-              if (i === LINES.length - 1 && !ctaFired.current) {
-                ctaFired.current = true;
-                onCtaComplete?.();
-              }
-            }}
-          >
-            {line.text}
-          </motion.p>
-        );
-      })}
-
-      <motion.div
-        className="mt-5 flex items-center gap-2"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: dividerDelay }}
+      <motion.p
+        variants={item}
+        className="text-xl font-bold text-[#6b4c9a] md:text-2xl"
       >
-        <span className="h-3 w-3 rounded-full bg-[#9b59b6]" />
-        <span className="h-3 w-3 rounded-full bg-[#f5d020]" />
-        <span className="h-3 w-3 rounded-full bg-[#3d6b35]" />
-        <span className="h-3 w-3 rounded-full bg-[#e05090]" />
+        Aaron et Néorah Sarfati
+      </motion.p>
+
+      <motion.div variants={item}>
+        <NevitubbiesBlock />
+      </motion.div>
+
+      <motion.p
+        variants={item}
+        className="mt-1 max-w-[280px] text-sm leading-relaxed font-medium text-[#3d6b35] md:max-w-sm md:text-base"
+      >
+        sont heureux de vous inviter au Pydion de leur fils et petit-fils
+      </motion.p>
+
+      <motion.p
+        variants={nameItem}
+        className="my-3 text-3xl font-extrabold leading-tight tubby-name-text md:text-5xl"
+      >
+        Névi Sarfati
+      </motion.p>
+
+      <motion.p
+        variants={item}
+        className="text-lg font-bold text-[#6b4c9a] md:text-xl"
+      >
+        le mercredi 8 juillet à 20h
+      </motion.p>
+
+      <motion.p
+        variants={item}
+        className="mt-2 text-sm font-semibold leading-snug text-[#3d6b35] md:text-base"
+      >
+        10 rue de Groslay
+        <br />
+        95160 Montmorency
+      </motion.p>
+
+      <motion.button
+        type="button"
+        variants={item}
+        whileHover={{ scale: 1.03 }}
+        whileTap={{ scale: 0.97 }}
+        onClick={onConfirmClick}
+        className="mt-6 rounded-full bg-gradient-to-r from-[#9b59b6] via-[#e05090] to-[#9b59b6] px-8 py-3.5 text-base font-bold tracking-wide text-white shadow-lg shadow-[#9b59b6]/30 md:px-10 md:py-4 md:text-lg"
+      >
+        Confirmer ma présence
+      </motion.button>
+
+      <motion.div variants={item} className="mt-5 flex items-center gap-2">
+        <span className="h-2.5 w-2.5 rounded-full bg-[#9b59b6]" />
+        <span className="h-2.5 w-2.5 rounded-full bg-[#f5d020]" />
+        <span className="h-2.5 w-2.5 rounded-full bg-[#3d6b35]" />
+        <span className="h-2.5 w-2.5 rounded-full bg-[#e05090]" />
       </motion.div>
     </motion.div>
   );

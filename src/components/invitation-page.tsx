@@ -31,9 +31,9 @@ export default function InvitationPage() {
     return () => clearTimeout(timer);
   }, []);
 
-  const handleCtaComplete = useCallback(() => {
+  const handleConfirmClick = useCallback(() => {
     setPhase("form");
-    smoothScrollTo(formRef.current, { duration: 2600, delay: 500, offset: -24 });
+    smoothScrollTo(formRef.current, { duration: 1800, delay: 100, offset: -16 });
   }, []);
 
   return (
@@ -43,7 +43,7 @@ export default function InvitationPage() {
       </section>
 
       <section ref={invitationRef} className="relative w-full shrink-0">
-        <InvitationScene showText={showText} onCtaComplete={handleCtaComplete} />
+        <InvitationScene showText={showText} onConfirmClick={handleConfirmClick} />
       </section>
 
       <section ref={formRef} id="rsvp" className="tubby-land relative w-full shrink-0 px-5 py-16 md:px-8 md:py-24">
