@@ -8,25 +8,25 @@ const ease = [0.22, 1, 0.36, 1] as const;
 const spring = { type: "spring" as const, stiffness: 110, damping: 24 };
 const springPop = { type: "spring" as const, stiffness: 160, damping: 20 };
 
-/** Délais lents — chaque bloc respire avant le suivant */
+/** Séquence texte — 10 s max */
 const T = {
   hosts: 0,
-  nevitubbies: 4.5,
-  photo: 9.0,
-  invite: 13.0,
-  neviName: 24.0,
-  date: 27.0,
-  address1: 28.5,
-  address2: 29.8,
-  cta: 31.5,
-  dots: 33.0,
+  nevitubbies: 0.9,
+  photo: 1.6,
+  invite: 2.4,
+  neviName: 5.0,
+  date: 6.2,
+  address1: 6.9,
+  address2: 7.4,
+  cta: 8.2,
+  dots: 9.0,
 };
 
 function fadeWord(delay: number) {
   return {
     initial: { opacity: 0, y: 12, filter: "blur(2px)" },
     animate: { opacity: 1, y: 0, filter: "blur(0px)" },
-    transition: { duration: 0.7, delay, ease },
+    transition: { duration: 0.4, delay, ease },
   };
 }
 
@@ -34,7 +34,7 @@ function AnimatedWords({
   text,
   className,
   baseDelay,
-  stagger = 0.45,
+  stagger = 0.12,
 }: {
   text: string;
   className?: string;
@@ -73,7 +73,7 @@ function InviteSentence() {
 
   words1.forEach((w, i) => {
     const d = delay;
-    delay += i === words1.length - 1 ? 0.6 : 0.38;
+    delay += i === words1.length - 1 ? 0.15 : 0.08;
     spans.push(
       <motion.span key={`p1-${i}`} className="inline-block" {...fadeWord(d)}>
         {w}
@@ -82,11 +82,11 @@ function InviteSentence() {
     );
   });
 
-  delay += 1.0;
+  delay += 0.2;
 
   words2.forEach((w, i) => {
     const d = delay;
-    delay += i === 3 ? 0.5 : 0.4;
+    delay += i === 3 ? 0.12 : 0.09;
     spans.push(
       <motion.span key={`p2-${i}`} className="inline-block" {...fadeWord(d)}>
         {w}
@@ -108,7 +108,7 @@ export function InvitationLines({ onConfirmClick }: InvitationLinesProps) {
       <AnimatedWords
         text="Aaron et Néorah Sarfati"
         baseDelay={T.hosts}
-        stagger={0.45}
+        stagger={0.12}
         className="text-xl font-bold text-[#6b4c9a] md:text-2xl"
       />
 
@@ -198,7 +198,7 @@ export function InvitationLines({ onConfirmClick }: InvitationLinesProps) {
             style={{ backgroundColor: color }}
             initial={{ scale: 0, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
-            transition={{ ...springPop, delay: T.dots + i * 0.12 }}
+            transition={{ ...springPop, delay: T.dots + i * 0.06 }}
           />
         ))}
       </div>

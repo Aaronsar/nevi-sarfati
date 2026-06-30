@@ -8,7 +8,10 @@ import { lockScroll, smoothScrollTo } from "@/lib/scroll-utils";
 
 type Phase = "sun" | "invitation" | "form";
 
-const SUN_DISPLAY_MS = 3500;
+const HERO_MS = 3000;
+const SCROLL_MS = 500;
+const PAUSE_MS = 500;
+const TEXT_START_MS = HERO_MS + SCROLL_MS + PAUSE_MS;
 
 export default function InvitationPage() {
   const invitationRef = useRef<HTMLElement>(null);
@@ -25,13 +28,12 @@ export default function InvitationPage() {
     const scrollTimer = setTimeout(() => {
       setPhase("invitation");
       lockScroll(false);
-      smoothScrollTo(invitationRef.current, { duration: 1800, delay: 200 });
-    }, SUN_DISPLAY_MS);
+      smoothScrollTo(invitationRef.current, { duration: SCROLL_MS, delay: 0 });
+    }, HERO_MS);
 
-    // Attendre la fin du scroll avant de lancer le texte
     const textTimer = setTimeout(() => {
       setShowText(true);
-    }, SUN_DISPLAY_MS + 3500);
+    }, TEXT_START_MS);
 
     return () => {
       clearTimeout(scrollTimer);
