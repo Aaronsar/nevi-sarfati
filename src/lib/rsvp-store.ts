@@ -1,36 +1,56 @@
 import { put, list } from "@vercel/blob";
+import { mkdir, writeFile } from "fs/promises";
+import path from "path";
 import type { RsvpEntry, RsvpInput } from "./rsvp-schema";
 
 const BLOB_PREFIX = "rsvp/";
+const LOCAL_RSVP_DIR = path.join(process.cwd(), "data", "rsvps");
 
-export async function saveRsvp(data: RsvpInput): Promise<RsvpEntry> {
-  const entry: RsvpEntry = {
+function createEntry(data: RsvpInput): RsvpEntry {
+  return {
     ...data,
     id: crypto.randomUUID(),
     submittedAt: new Date().toISOString(),
   };
+}
 
-  const token = process.env.BLOB_READ_WRITE_TOKEN;
-  if (!token) {
-    throw new Error("BLOB_READ_WRITE_TOKEN is not configured");
-  }
+async function saveToLocalFile(entry: RsvpEntry): Promise<void> {
+  await mkdir(LOCAL_RSVP_DIR, { recursive: true });
+  await writeFile(
+    path.join(LOCAL_RSVP_DIR, `${entry.id}.json`),
+    JSON.stringify(entry, null, 2),
+    "utf-8",
+  );
+}
 
+async function saveToBlob(entry: RsvpEntry): Promise<void> {
   await put(`${BLOB_PREFIX}${entry.id}.json`, JSON.stringify(entry, null, 2), {
     access: "private",
     contentType: "application/json",
-    token,
+    addRandomSuffix: false,
   });
+}
 
-  return entry;
+export async function saveRsvp(data: RsvpInput): Promise<RsvpEntry> {
+  const entry = createEntry(data);
+
+  try {
+    await saveToBlob(entry);
+    return entry;
+  } catch (error) {
+    console.error("Blob save failed:", error);
+
+    if (process.env.NODE_ENV !== "production") {
+      await saveToLocalFile(entry);
+      return entry;
+    }
+
+    throw error;
+  }
 }
 
 export async function listRsvps(): Promise<RsvpEntry[]> {
-  const token = process.env.BLOB_READ_WRITE_TOKEN;
-  if (!token) {
-    throw new Error("BLOB_READ_WRITE_TOKEN is not configured");
-  }
-
-  const { blobs } = await list({ prefix: BLOB_PREFIX, token });
+  const { blobs } = await list({ prefix: BLOB_PREFIX });
   const entries: RsvpEntry[] = [];
 
   for (const blob of blobs) {
