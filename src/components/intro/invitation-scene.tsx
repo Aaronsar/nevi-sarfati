@@ -34,29 +34,50 @@ export function InvitationScene({ showText, onConfirmClick }: InvitationScenePro
         transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
       >
         <div className="tubby-card overflow-hidden rounded-3xl px-5 py-6 md:p-8">
-          <div className="mx-auto mb-4 flex h-12 w-16 items-center justify-center rounded-lg border-[3px] border-gray-400 bg-gradient-to-b from-gray-100 to-gray-200 shadow-inner md:h-14 md:w-20">
+          {/* Soleil Névi — grand */}
+          <motion.div
+            className="relative mx-auto mb-5 flex h-[140px] w-[140px] items-center justify-center md:mb-6 md:h-[170px] md:w-[170px]"
+            initial={{ opacity: 0, scale: 0.7 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+          >
             <motion.div
-              animate={{ scale: [1, 1.06, 1] }}
-              transition={{ duration: 2, repeat: Infinity }}
+              className="absolute inset-0"
+              animate={{ rotate: 360 }}
+              transition={{ duration: 80, repeat: Infinity, ease: "linear" }}
             >
+              {Array.from({ length: 12 }).map((_, i) => (
+                <div
+                  key={i}
+                  className="absolute top-1/2 left-1/2 origin-bottom"
+                  style={{
+                    width: 3,
+                    height: 72,
+                    transform: `rotate(${(360 / 12) * i}deg) translateY(-50%)`,
+                    background:
+                      "linear-gradient(to top, transparent, rgba(245,208,32,0.5), rgba(255,230,100,0.8))",
+                  }}
+                />
+              ))}
+            </motion.div>
+
+            <motion.div
+              className="absolute inset-2 rounded-full bg-gradient-to-br from-[#ffe566] via-[#f5d020] to-[#e8a020]"
+              animate={{ scale: [1, 1.04, 1] }}
+              transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+              style={{ boxShadow: "0 0 40px rgba(245,208,32,0.5)" }}
+            />
+
+            <div className="relative z-10 h-[88px] w-[88px] overflow-hidden rounded-full border-[3px] border-white/80 shadow-lg md:h-[108px] md:w-[108px]">
               <Image
                 src="/images/sun-baby.png"
                 alt="Névi"
-                width={48}
-                height={48}
-                className="h-9 w-9 rounded-full object-cover md:h-10 md:w-10"
+                fill
+                className="object-cover object-center scale-110"
+                sizes="108px"
               />
-            </motion.div>
-          </div>
-
-          <motion.p
-            className="mb-3 text-center font-hebrew text-sm text-[#6b4c9a]/70 md:text-base"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: showText ? 1 : 0 }}
-            transition={{ duration: 0.5 }}
-          >
-            ב״ה
-          </motion.p>
+            </div>
+          </motion.div>
 
           <InvitationLines visible={showText} onConfirmClick={onConfirmClick} />
         </div>
