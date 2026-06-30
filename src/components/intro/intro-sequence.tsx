@@ -1,12 +1,12 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
-import { SunBaby } from "./sun-baby";
-import { EnvelopeOpen } from "./envelope-open";
+import { SunHero } from "./sun-hero";
 import { InvitationLines } from "./invitation-lines";
 
-type IntroPhase = "sun" | "envelope" | "opening" | "text" | "done";
+type Phase = "sun" | "bloom" | "text" | "exit";
 
 type IntroSequenceProps = {
   onComplete: () => void;
@@ -14,9 +14,8 @@ type IntroSequenceProps = {
 };
 
 export function IntroSequence({ onComplete, onScrollToForm }: IntroSequenceProps) {
-  const [phase, setPhase] = useState<IntroPhase>("sun");
+  const [phase, setPhase] = useState<Phase>("sun");
   const [showText, setShowText] = useState(false);
-  const [fadeOut, setFadeOut] = useState(false);
 
   useEffect(() => {
     document.body.style.overflow = "hidden";
@@ -27,111 +26,111 @@ export function IntroSequence({ onComplete, onScrollToForm }: IntroSequenceProps
 
   useEffect(() => {
     const timers = [
-      setTimeout(() => setPhase("envelope"), 2600),
-      setTimeout(() => setPhase("opening"), 3800),
+      setTimeout(() => setPhase("bloom"), 3500),
       setTimeout(() => {
         setPhase("text");
         setShowText(true);
-      }, 5200),
-      setTimeout(() => setFadeOut(true), 10000),
+      }, 4800),
+      setTimeout(() => setPhase("exit"), 11500),
       setTimeout(() => {
         document.body.style.overflow = "";
         onComplete();
         onScrollToForm();
-      }, 11000),
+      }, 12800),
     ];
     return () => timers.forEach(clearTimeout);
   }, [onComplete, onScrollToForm]);
 
-  const envelopePhase =
-    phase === "sun"
-      ? "hidden"
-      : phase === "envelope"
-        ? "closed"
-        : phase === "opening"
-          ? "opening"
-          : "open";
-
-  const showSunOnly = phase === "sun";
-  const showEnvelope = phase !== "sun";
+  const showBloom = phase === "bloom";
+  const showInvitation = phase === "text" || phase === "exit";
 
   return (
-    <AnimatePresence>
-      {!fadeOut && (
-        <motion.div
-          className="fixed inset-0 z-50 flex items-center justify-center overflow-hidden cloud-bg"
-          exit={{ opacity: 0 }}
-          transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
-        >
-          {Array.from({ length: 24 }).map((_, i) => (
-            <motion.div
-              key={i}
-              className="pointer-events-none absolute rounded-full bg-gold/25"
-              style={{
-                width: 3 + (i % 4),
-                height: 3 + (i % 4),
-                left: `${(i * 13 + 5) % 95}%`,
-                top: `${(i * 19 + 3) % 90}%`,
-              }}
-              animate={{ y: [0, -40, 0], opacity: [0.15, 0.5, 0.15] }}
-              transition={{ duration: 4 + (i % 5), repeat: Infinity, delay: i * 0.15 }}
-            />
-          ))}
+    <motion.div
+      className="fixed inset-0 z-50 overflow-hidden"
+      animate={{ opacity: phase === "exit" ? 0 : 1 }}
+      transition={{ duration: 1.3, ease: [0.22, 1, 0.36, 1] }}
+    >
+      <SunHero active={phase === "sun" || phase === "bloom"} exiting={phase !== "sun"} />
 
-          <div className="flex min-h-screen w-full flex-col items-center justify-center px-4 py-8">
-            {/* Soleil Teletubbies — phase 1 */}
-            <AnimatePresence mode="wait">
-              {showSunOnly && (
-                <motion.div
-                  key="sun"
-                  className="flex flex-col items-center justify-center"
-                  initial={{ opacity: 0, scale: 0.3 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.85, transition: { duration: 0.7 } }}
-                  transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
-                >
-                  <SunBaby isActive isOpening={false} size="large" />
-                  <motion.p
-                    className="mt-10 font-hebrew text-2xl text-gold-dark/60"
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 1 }}
-                  >
-                    ב״ה
-                  </motion.p>
-                </motion.div>
-              )}
-            </AnimatePresence>
-
-            {/* Enveloppe + texte — phases 2 à 4 */}
-            {showEnvelope && (
-              <motion.div
-                className="flex w-full max-w-lg flex-col items-center"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.8 }}
-              >
-                <EnvelopeOpen phase={envelopePhase} />
-
-                <div className="mt-10 w-full">
-                  <InvitationLines visible={showText} />
-                </div>
-              </motion.div>
-            )}
-          </div>
-
+      <AnimatePresence>
+        {showBloom && phase === "bloom" && (
           <motion.div
-            className="absolute bottom-10 left-1/2 -translate-x-1/2 text-gold/40"
-            animate={{ opacity: showText ? 1 : 0, y: showText ? [0, 8, 0] : 0 }}
-            transition={{ y: { duration: 1.8, repeat: Infinity } }}
+            key="bloom"
+            className="absolute inset-0 flex items-center justify-center"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.6 }}
           >
-            <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 14l-7 7m0 0l-7-7" />
-            </svg>
+            <motion.div
+              className="rounded-full"
+              style={{
+                width: "30vmax",
+                height: "30vmax",
+                background:
+                  "radial-gradient(circle, rgba(255,248,220,0.95) 0%, rgba(232,213,163,0.7) 35%, rgba(201,162,39,0.25) 60%, transparent 70%)",
+              }}
+              initial={{ scale: 0.15, opacity: 0 }}
+              animate={{ scale: 5.5, opacity: 1 }}
+              transition={{ duration: 1.6, ease: [0.22, 1, 0.36, 1] }}
+            />
           </motion.div>
-        </motion.div>
-      )}
-    </AnimatePresence>
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {showInvitation && (
+          <motion.div
+            key="invitation"
+            className="cloud-bg absolute inset-0 flex flex-col items-center justify-center px-6"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 1.1, ease: [0.22, 1, 0.36, 1] }}
+          >
+            <motion.div
+              className="relative mb-8 overflow-hidden rounded-full shadow-xl shadow-gold/30"
+              style={{ width: 80, height: 80 }}
+              initial={{ opacity: 0, scale: 0, y: -30 }}
+              animate={{ opacity: 0.9, scale: 1, y: 0 }}
+              transition={{ duration: 1, ease: [0.22, 1, 0.36, 1], delay: 0.2 }}
+            >
+              <Image
+                src="/images/sun-baby.png"
+                alt=""
+                fill
+                className="object-cover object-center scale-125"
+                sizes="80px"
+              />
+            </motion.div>
+
+            <motion.p
+              className="mb-8 font-hebrew text-xl text-gold-dark/70"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.5 }}
+            >
+              ב״ה
+            </motion.p>
+
+            <InvitationLines visible={showText} />
+
+            <motion.div
+              className="absolute bottom-10 text-gold/40"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1, y: [0, 8, 0] }}
+              transition={{
+                opacity: { delay: 5 },
+                y: { duration: 1.8, repeat: Infinity, delay: 5 },
+              }}
+            >
+              <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 14l-7 7m0 0l-7-7" />
+              </svg>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.div>
   );
 }
 
@@ -145,9 +144,9 @@ export function useAutoScroll() {
 
     setTimeout(() => {
       const start = window.scrollY;
-      const end = target.getBoundingClientRect().top + window.scrollY - 32;
+      const end = target.getBoundingClientRect().top + window.scrollY - 24;
       const distance = end - start;
-      const duration = 2800;
+      const duration = 3000;
       let startTime: number | null = null;
 
       function step(timestamp: number) {
@@ -159,7 +158,7 @@ export function useAutoScroll() {
       }
 
       requestAnimationFrame(step);
-    }, 500);
+    }, 600);
   };
 
   return { formRef, introDone, setIntroDone, scrollToForm };
