@@ -3,9 +3,14 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
-type FormState = "idle" | "loading" | "success" | "error";
+type FormState = "idle" | "loading" | "error";
 
-export function RsvpForm() {
+type RsvpFormProps = {
+  onSuccess?: () => void;
+  visible?: boolean;
+};
+
+export function RsvpForm({ onSuccess, visible = false }: RsvpFormProps) {
   const [famille, setFamille] = useState("");
   const [present, setPresent] = useState<"oui" | "non" | "">("");
   const [nombrePersonnes, setNombrePersonnes] = useState("");
@@ -36,46 +41,18 @@ export function RsvpForm() {
         return;
       }
 
-      setFormState("success");
+      onSuccess?.();
     } catch {
       setErrorMessage("Impossible d'envoyer votre réponse. Veuillez réessayer.");
       setFormState("error");
     }
   }
 
-  if (formState === "success") {
-    return (
-      <motion.div
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
-        className="tubby-form rounded-3xl p-8 text-center md:p-10"
-      >
-        <motion.div
-          initial={{ scale: 0 }}
-          animate={{ scale: 1 }}
-          transition={{ type: "spring", delay: 0.2 }}
-          className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-[#f5d020]/30 text-3xl"
-        >
-          🎉
-        </motion.div>
-        <h3 className="mb-2 text-2xl font-bold text-[#6b4c9a]">Eh-oh ! Merci !</h3>
-        <p className="text-lg text-[#3d6b35]">
-          Votre réponse a bien été enregistrée.
-          <br />
-          {present === "oui"
-            ? "Nous avons hâte de vous accueillir !"
-            : "Merci de nous avoir prévenus."}
-        </p>
-      </motion.div>
-    );
-  }
-
   return (
     <motion.form
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.6 }}
+      initial={false}
+      animate={visible ? { opacity: 1, y: 0 } : { opacity: 0, y: 12 }}
+      transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
       onSubmit={handleSubmit}
       className="tubby-form w-full max-w-md rounded-3xl p-6 md:p-8"
     >

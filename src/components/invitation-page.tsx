@@ -4,18 +4,21 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { RsvpForm } from "./rsvp-form";
 import { SunHero } from "./intro/sun-hero";
 import { InvitationScene } from "./intro/invitation-scene";
+import { ThankYouScreen } from "./thank-you-screen";
 import { lockScroll, smoothScrollTo } from "@/lib/scroll-utils";
 
-type Phase = "sun" | "invitation" | "form";
+type Phase = "sun" | "invitation" | "form" | "thanks";
 
 const HERO_MS = 3000;
 const SCROLL_MS = 500;
 const PAUSE_MS = 500;
 const TEXT_START_MS = HERO_MS + SCROLL_MS + PAUSE_MS;
+const FORM_SCROLL_MS = 500;
 
 export default function InvitationPage() {
   const invitationRef = useRef<HTMLElement>(null);
   const formRef = useRef<HTMLElement>(null);
+  const thanksRef = useRef<HTMLElement>(null);
   const [phase, setPhase] = useState<Phase>("sun");
   const [showText, setShowText] = useState(false);
 
@@ -43,7 +46,12 @@ export default function InvitationPage() {
 
   const handleConfirmClick = useCallback(() => {
     setPhase("form");
-    smoothScrollTo(formRef.current, { duration: 1800, delay: 100, offset: -16 });
+    smoothScrollTo(formRef.current, { duration: FORM_SCROLL_MS, delay: 0, offset: -16 });
+  }, []);
+
+  const handleRsvpSuccess = useCallback(() => {
+    setPhase("thanks");
+    smoothScrollTo(thanksRef.current, { duration: FORM_SCROLL_MS, delay: 0 });
   }, []);
 
   return (
@@ -64,33 +72,43 @@ export default function InvitationPage() {
         <div className="tubby-sky absolute inset-0 opacity-50" />
         <div className="relative z-10 mx-auto max-w-md">
           <div className="mb-10 flex justify-center">
-            <RsvpForm />
+            <RsvpForm visible={phase === "form"} onSuccess={handleRsvpSuccess} />
           </div>
 
-          <div className="space-y-6 text-center">
-            <div className="mx-auto flex justify-center gap-2">
-              <span className="h-2 w-8 rounded-full bg-[#9b59b6]" />
-              <span className="h-2 w-8 rounded-full bg-[#f5d020]" />
-              <span className="h-2 w-8 rounded-full bg-[#3d6b35]" />
-              <span className="h-2 w-8 rounded-full bg-[#e05090]" />
+          {phase !== "thanks" && (
+            <div className="space-y-6 text-center">
+              <div className="mx-auto flex justify-center gap-2">
+                <span className="h-2 w-8 rounded-full bg-[#9b59b6]" />
+                <span className="h-2 w-8 rounded-full bg-[#f5d020]" />
+                <span className="h-2 w-8 rounded-full bg-[#3d6b35]" />
+                <span className="h-2 w-8 rounded-full bg-[#e05090]" />
+              </div>
+              <div>
+                <p className="text-sm font-bold tracking-wider text-[#6b4c9a] uppercase">Lieu</p>
+                <a
+                  href="https://maps.google.com/?q=10+rue+de+Groslay,+Montmorency,+95160"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-2 inline-flex flex-col items-center gap-1 text-xl font-bold text-[#3d6b35] transition-colors hover:text-[#6b4c9a] md:text-2xl"
+                >
+                  10 rue de Groslay
+                  <span>Montmorency, 95160</span>
+                </a>
+              </div>
             </div>
-            <div>
-              <p className="text-sm font-bold tracking-wider text-[#6b4c9a] uppercase">Lieu</p>
-              <a
-                href="https://maps.google.com/?q=10+rue+de+Groslay,+Montmorency,+95160"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="mt-2 inline-flex flex-col items-center gap-1 text-xl font-bold text-[#3d6b35] transition-colors hover:text-[#6b4c9a] md:text-2xl"
-              >
-                10 rue de Groslay
-                <span>Montmorency, 95160</span>
-              </a>
-            </div>
-          </div>
+          )}
 
           <footer className="mt-16 pb-8 text-center text-sm font-medium text-[#6b4c9a]/60">
             <p>nevi-sarfati.fr · Big hug!</p>
           </footer>
+        </div>
+      </section>
+
+      <section ref={thanksRef} className="tubby-land relative w-full shrink-0">
+        <div className="tubby-hills absolute inset-0" />
+        <div className="tubby-sky absolute inset-0" />
+        <div className="relative z-10">
+          <ThankYouScreen />
         </div>
       </section>
     </main>
