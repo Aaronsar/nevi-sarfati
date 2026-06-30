@@ -19,13 +19,23 @@ export function IntroSequence({ onComplete, onScrollToForm }: IntroSequenceProps
   const [fadeOut, setFadeOut] = useState(false);
 
   useEffect(() => {
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, []);
+
+  useEffect(() => {
     const timers = [
       setTimeout(() => setPhase("envelope"), 2600),
-      setTimeout(() => setPhase("opening"), 3600),
-      setTimeout(() => setShowText(true), 5200),
-      setTimeout(() => setPhase("text"), 5200),
+      setTimeout(() => setPhase("opening"), 3800),
+      setTimeout(() => {
+        setPhase("text");
+        setShowText(true);
+      }, 5200),
       setTimeout(() => setFadeOut(true), 10000),
       setTimeout(() => {
+        document.body.style.overflow = "";
         onComplete();
         onScrollToForm();
       }, 11000),
@@ -42,15 +52,17 @@ export function IntroSequence({ onComplete, onScrollToForm }: IntroSequenceProps
           ? "opening"
           : "open";
 
+  const showSunOnly = phase === "sun";
+  const showEnvelope = phase !== "sun";
+
   return (
     <AnimatePresence>
       {!fadeOut && (
         <motion.div
-          className="fixed inset-0 z-50 flex flex-col items-center justify-center overflow-hidden cloud-bg"
+          className="fixed inset-0 z-50 flex items-center justify-center overflow-hidden cloud-bg"
           exit={{ opacity: 0 }}
           transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
         >
-          {/* Floating gold particles */}
           {Array.from({ length: 24 }).map((_, i) => (
             <motion.div
               key={i}
@@ -66,24 +78,24 @@ export function IntroSequence({ onComplete, onScrollToForm }: IntroSequenceProps
             />
           ))}
 
-          <div className="relative flex w-full flex-col items-center justify-center px-4">
-            {/* Phase 1 : soleil Teletubbies seul */}
+          <div className="flex min-h-screen w-full flex-col items-center justify-center px-4 py-8">
+            {/* Soleil Teletubbies — phase 1 */}
             <AnimatePresence mode="wait">
-              {phase === "sun" && (
+              {showSunOnly && (
                 <motion.div
-                  key="sun-only"
-                  className="flex flex-col items-center"
-                  initial={{ opacity: 0, scale: 0.5 }}
+                  key="sun"
+                  className="flex flex-col items-center justify-center"
+                  initial={{ opacity: 0, scale: 0.3 }}
                   animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.9, y: -30 }}
-                  transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+                  exit={{ opacity: 0, scale: 0.85, transition: { duration: 0.7 } }}
+                  transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
                 >
                   <SunBaby isActive isOpening={false} size="large" />
                   <motion.p
-                    className="mt-8 font-hebrew text-xl text-gold-dark/70 md:text-2xl"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 1.2 }}
+                    className="mt-10 font-hebrew text-2xl text-gold-dark/60"
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 1 }}
                   >
                     ב״ה
                   </motion.p>
@@ -91,37 +103,31 @@ export function IntroSequence({ onComplete, onScrollToForm }: IntroSequenceProps
               )}
             </AnimatePresence>
 
-            {/* Phase 2+ : enveloppe qui s'ouvre */}
-            {phase !== "sun" && (
+            {/* Enveloppe + texte — phases 2 à 4 */}
+            {showEnvelope && (
               <motion.div
-                initial={{ opacity: 0, y: 40 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
-                className="flex flex-col items-center"
+                className="flex w-full max-w-lg flex-col items-center"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.8 }}
               >
-                <EnvelopeOpen phase={envelopePhase} showSun={false} />
+                <EnvelopeOpen phase={envelopePhase} />
 
-                <div className="mt-6 min-h-[260px] md:min-h-[300px]">
+                <div className="mt-10 w-full">
                   <InvitationLines visible={showText} />
                 </div>
               </motion.div>
             )}
           </div>
 
-          {/* Indicateur défilement */}
           <motion.div
-            className="absolute bottom-8 flex flex-col items-center gap-2 text-gold/50"
-            animate={{ opacity: showText ? 1 : 0 }}
-            transition={{ duration: 0.6 }}
+            className="absolute bottom-10 left-1/2 -translate-x-1/2 text-gold/40"
+            animate={{ opacity: showText ? 1 : 0, y: showText ? [0, 8, 0] : 0 }}
+            transition={{ y: { duration: 1.8, repeat: Infinity } }}
           >
-            <motion.div
-              animate={{ y: [0, 10, 0] }}
-              transition={{ duration: 1.8, repeat: Infinity }}
-            >
-              <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 14l-7 7m0 0l-7-7" />
-              </svg>
-            </motion.div>
+            <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 14l-7 7m0 0l-7-7" />
+            </svg>
           </motion.div>
         </motion.div>
       )}
@@ -139,15 +145,14 @@ export function useAutoScroll() {
 
     setTimeout(() => {
       const start = window.scrollY;
-      const end = target.getBoundingClientRect().top + window.scrollY - 40;
+      const end = target.getBoundingClientRect().top + window.scrollY - 32;
       const distance = end - start;
       const duration = 2800;
       let startTime: number | null = null;
 
       function step(timestamp: number) {
         if (!startTime) startTime = timestamp;
-        const elapsed = timestamp - startTime;
-        const progress = Math.min(elapsed / duration, 1);
+        const progress = Math.min((timestamp - startTime) / duration, 1);
         const eased = 1 - Math.pow(1 - progress, 3);
         window.scrollTo(0, start + distance * eased);
         if (progress < 1) requestAnimationFrame(step);
