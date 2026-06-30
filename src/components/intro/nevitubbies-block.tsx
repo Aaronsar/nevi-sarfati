@@ -12,14 +12,12 @@ export function NevitubbiesLabel() {
 
 export function NevitubbiesPhoto() {
   return (
-    <div className="overflow-hidden rounded-2xl border-[3px] border-white shadow-lg">
-      <Image
-        src="/images/nevitubbies.png"
-        alt="Les Névitubbies"
-        width={400}
-        height={300}
-        className="h-auto w-full"
-      />
-    </div>
+    <Image
+      src="/images/nevitubbies.png"
+      alt="Les Névitubbies"
+      width={400}
+      height={300}
+      className="h-auto w-full"
+    />
   );
 }

@@ -4,29 +4,37 @@ import { motion } from "framer-motion";
 import type { ReactNode } from "react";
 import { NevitubbiesLabel, NevitubbiesPhoto } from "./nevitubbies-block";
 
-const ease = [0.22, 1, 0.36, 1] as const;
-const spring = { type: "spring" as const, stiffness: 110, damping: 24 };
-const springPop = { type: "spring" as const, stiffness: 160, damping: 20 };
+const ease = [0.25, 0.46, 0.45, 0.94] as const;
+const springSoft = { type: "spring" as const, stiffness: 120, damping: 22 };
+const springPop = { type: "spring" as const, stiffness: 200, damping: 18 };
 
-/** Séquence texte — 10 s max */
+/** Séquence texte — ~7 s */
 const T = {
   hosts: 0,
-  nevitubbies: 0.9,
-  photo: 1.6,
-  invite: 2.4,
-  neviName: 5.0,
-  date: 6.2,
-  address1: 6.9,
-  address2: 7.4,
-  cta: 8.2,
-  dots: 9.0,
+  nevitubbies: 0.5,
+  photo: 0.95,
+  invite: 1.55,
+  neviName: 3.35,
+  date: 4.15,
+  address1: 4.55,
+  address2: 4.8,
+  cta: 5.35,
+  dots: 5.85,
 };
 
 function fadeWord(delay: number) {
   return {
-    initial: { opacity: 0, y: 12, filter: "blur(2px)" },
-    animate: { opacity: 1, y: 0, filter: "blur(0px)" },
-    transition: { duration: 0.4, delay, ease },
+    initial: { opacity: 0, y: 8 },
+    animate: { opacity: 1, y: 0 },
+    transition: { ...springSoft, delay },
+  };
+}
+
+function fadeBlock(delay: number) {
+  return {
+    initial: { opacity: 0, y: 10 },
+    animate: { opacity: 1, y: 0 },
+    transition: { ...springSoft, delay },
   };
 }
 
@@ -34,7 +42,7 @@ function AnimatedWords({
   text,
   className,
   baseDelay,
-  stagger = 0.12,
+  stagger = 0.08,
 }: {
   text: string;
   className?: string;
@@ -73,7 +81,7 @@ function InviteSentence() {
 
   words1.forEach((w, i) => {
     const d = delay;
-    delay += i === words1.length - 1 ? 0.15 : 0.08;
+    delay += i === words1.length - 1 ? 0.1 : 0.055;
     spans.push(
       <motion.span key={`p1-${i}`} className="inline-block" {...fadeWord(d)}>
         {w}
@@ -82,11 +90,11 @@ function InviteSentence() {
     );
   });
 
-  delay += 0.2;
+  delay += 0.12;
 
   words2.forEach((w, i) => {
     const d = delay;
-    delay += i === 3 ? 0.12 : 0.09;
+    delay += i === 3 ? 0.08 : 0.06;
     spans.push(
       <motion.span key={`p2-${i}`} className="inline-block" {...fadeWord(d)}>
         {w}
@@ -96,6 +104,34 @@ function InviteSentence() {
   });
 
   return <p className={className}>{spans}</p>;
+}
+
+function NevitubbiesPhotoReveal() {
+  return (
+    <motion.div
+      className="overflow-hidden rounded-2xl border-[3px] border-white shadow-lg"
+      initial={{ opacity: 0, scale: 0.75, y: 24, rotate: -4 }}
+      animate={{
+        opacity: 1,
+        scale: [0.75, 1.05, 1],
+        y: [24, -5, 0],
+        rotate: [-4, 2, 0],
+      }}
+      transition={{
+        duration: 0.75,
+        delay: T.photo,
+        times: [0, 0.7, 1],
+        ease,
+      }}
+    >
+      <motion.div
+        animate={{ rotate: [0, 1.5, -1.5, 0] }}
+        transition={{ delay: T.photo + 0.75, duration: 0.45, ease: "easeInOut" }}
+      >
+        <NevitubbiesPhoto />
+      </motion.div>
+    </motion.div>
+  );
 }
 
 type InvitationLinesProps = {
@@ -108,27 +144,17 @@ export function InvitationLines({ onConfirmClick }: InvitationLinesProps) {
       <AnimatedWords
         text="Aaron et Néorah Sarfati"
         baseDelay={T.hosts}
-        stagger={0.12}
+        stagger={0.09}
         className="text-xl font-bold text-[#6b4c9a] md:text-2xl"
       />
 
-      <motion.div
-        className="my-2 w-full max-w-[260px] md:max-w-xs"
-        initial={{ opacity: 0, y: 14 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ ...spring, delay: T.nevitubbies }}
-      >
+      <motion.div className="my-2 w-full max-w-[260px] md:max-w-xs" {...fadeBlock(T.nevitubbies)}>
         <NevitubbiesLabel />
       </motion.div>
 
-      <motion.div
-        className="my-2 w-full max-w-[260px] md:max-w-xs"
-        initial={{ opacity: 0, scale: 0.96, y: 18 }}
-        animate={{ opacity: 1, scale: 1, y: 0 }}
-        transition={{ ...spring, delay: T.photo }}
-      >
-        <NevitubbiesPhoto />
-      </motion.div>
+      <div className="my-2 w-full max-w-[260px] md:max-w-xs">
+        <NevitubbiesPhotoReveal />
+      </div>
 
       <div className="mt-1 w-full">
         <InviteSentence />
@@ -136,15 +162,15 @@ export function InvitationLines({ onConfirmClick }: InvitationLinesProps) {
 
       <motion.div
         className="relative my-4 md:my-5"
-        initial={{ opacity: 0, scale: 0.88, y: 10 }}
+        initial={{ opacity: 0, scale: 0.9, y: 8 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         transition={{ ...springPop, delay: T.neviName }}
       >
         <motion.div
           className="pointer-events-none absolute -inset-3 rounded-full bg-[#f5d020]/20 blur-md"
-          initial={{ opacity: 0, scale: 0.7 }}
-          animate={{ opacity: [0, 0.8, 0.45], scale: [0.7, 1.15, 1] }}
-          transition={{ duration: 1.2, delay: T.neviName + 0.15, ease: "easeOut" }}
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: [0, 0.75, 0.4], scale: [0.8, 1.1, 1] }}
+          transition={{ duration: 0.8, delay: T.neviName + 0.08, ease: "easeOut" }}
         />
         <p className="relative text-3xl font-extrabold leading-tight tubby-name-text md:text-5xl">
           Névi Sarfati
@@ -153,33 +179,25 @@ export function InvitationLines({ onConfirmClick }: InvitationLinesProps) {
 
       <motion.p
         className="text-lg font-bold text-[#6b4c9a] md:text-xl"
-        initial={{ opacity: 0, y: 12 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.65, delay: T.date, ease }}
-      >
-        le mercredi 8 juillet à 20h
-      </motion.p>
+        {...fadeBlock(T.date)}
+      />
 
       <motion.p
         className="mt-2 text-sm font-semibold text-[#3d6b35] md:text-base"
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, delay: T.address1, ease }}
+        {...fadeBlock(T.address1)}
       >
         10 rue de Groslay
       </motion.p>
       <motion.p
         className="text-sm font-semibold text-[#3d6b35] md:text-base"
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, delay: T.address2, ease }}
+        {...fadeBlock(T.address2)}
       >
         95160 Montmorency
       </motion.p>
 
       <motion.button
         type="button"
-        initial={{ opacity: 0, scale: 0.9, y: 12 }}
+        initial={{ opacity: 0, scale: 0.92, y: 10 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         transition={{ ...springPop, delay: T.cta }}
         whileHover={{ scale: 1.04 }}
@@ -198,7 +216,7 @@ export function InvitationLines({ onConfirmClick }: InvitationLinesProps) {
             style={{ backgroundColor: color }}
             initial={{ scale: 0, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
-            transition={{ ...springPop, delay: T.dots + i * 0.06 }}
+            transition={{ ...springPop, delay: T.dots + i * 0.05 }}
           />
         ))}
       </div>
