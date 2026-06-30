@@ -24,8 +24,23 @@
   --font-hebrew: var(--font-noto-hebrew);
 }
 
+@keyframes envelope-flap {
+  from {
+    transform: rotateX(0deg);
+  }
+  to {
+    transform: rotateX(-170deg);
+  }
+}
+
+.envelope-flap {
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+}
+
 html {
   scroll-behavior: smooth;
+  overflow-x: hidden;
 }
 
 body {
