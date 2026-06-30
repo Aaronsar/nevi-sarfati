@@ -178,9 +178,11 @@ export function InvitationLines({ onConfirmClick }: InvitationLinesProps) {
       </motion.div>
 
       <motion.p
-        className="text-lg font-bold text-[#6b4c9a] md:text-xl"
+        className="mt-1 text-lg font-bold text-[#6b4c9a] md:text-xl"
         {...fadeBlock(T.date)}
-      />
+      >
+        le mercredi 8 juillet à 20h
+      </motion.p>
 
       <motion.p
         className="mt-2 text-sm font-semibold text-[#3d6b35] md:text-base"
