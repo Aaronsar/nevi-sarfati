@@ -8,18 +8,18 @@ const ease = [0.25, 0.46, 0.45, 0.94] as const;
 const springSoft = { type: "spring" as const, stiffness: 120, damping: 22 };
 const springPop = { type: "spring" as const, stiffness: 200, damping: 18 };
 
-/** Séquence texte — ~7 s */
+/** Séquence texte — ~8,5 s */
 const T = {
   hosts: 0,
-  nevitubbies: 0.5,
-  photo: 0.95,
-  invite: 1.55,
-  neviName: 3.35,
-  date: 4.15,
-  address1: 4.55,
-  address2: 4.8,
-  cta: 5.35,
-  dots: 5.85,
+  nevitubbies: 0.75,
+  photo: 1.35,
+  invite: 2.15,
+  neviName: 4.3,
+  date: 5.4,
+  address1: 5.95,
+  address2: 6.35,
+  cta: 7.1,
+  dots: 7.85,
 };
 
 function fadeWord(delay: number) {
@@ -81,7 +81,7 @@ function InviteSentence() {
 
   words1.forEach((w, i) => {
     const d = delay;
-    delay += i === words1.length - 1 ? 0.1 : 0.055;
+    delay += i === words1.length - 1 ? 0.12 : 0.065;
     spans.push(
       <motion.span key={`p1-${i}`} className="inline-block" {...fadeWord(d)}>
         {w}
@@ -90,11 +90,11 @@ function InviteSentence() {
     );
   });
 
-  delay += 0.12;
+  delay += 0.15;
 
   words2.forEach((w, i) => {
     const d = delay;
-    delay += i === 3 ? 0.08 : 0.06;
+    delay += i === 3 ? 0.1 : 0.07;
     spans.push(
       <motion.span key={`p2-${i}`} className="inline-block" {...fadeWord(d)}>
         {w}
@@ -144,7 +144,7 @@ export function InvitationLines({ onConfirmClick }: InvitationLinesProps) {
       <AnimatedWords
         text="Aaron et Néorah Sarfati"
         baseDelay={T.hosts}
-        stagger={0.09}
+        stagger={0.1}
         className="text-xl font-bold text-[#6b4c9a] md:text-2xl"
       />
 

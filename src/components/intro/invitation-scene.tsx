@@ -5,11 +5,12 @@ import { motion } from "framer-motion";
 import { InvitationLines } from "./invitation-lines";
 
 type InvitationSceneProps = {
+  revealed: boolean;
   showText: boolean;
   onConfirmClick?: () => void;
 };
 
-export function InvitationScene({ showText, onConfirmClick }: InvitationSceneProps) {
+export function InvitationScene({ revealed, showText, onConfirmClick }: InvitationSceneProps) {
   return (
     <div className="tubby-land relative flex min-h-[100dvh] items-start justify-center overflow-hidden px-3 pt-8 pb-12 md:items-center md:px-6 md:py-16">
       <div className="tubby-hills absolute inset-0" />
@@ -29,20 +30,28 @@ export function InvitationScene({ showText, onConfirmClick }: InvitationScenePro
 
       <motion.div
         className="relative z-10 w-full max-w-sm md:max-w-md"
-        initial={{ opacity: 0, y: 60 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+        initial={false}
+        animate={
+          revealed
+            ? { opacity: 1, y: 0, scale: 1 }
+            : { opacity: 0, y: 28, scale: 0.97 }
+        }
+        transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
       >
-        <div className="tubby-card overflow-hidden rounded-3xl px-5 py-6 md:p-8">
+        <motion.div layout className="tubby-card overflow-hidden rounded-3xl px-5 py-6 md:p-8">
           <motion.div
             className="relative mx-auto mb-5 flex h-[140px] w-[140px] items-center justify-center md:mb-6 md:h-[170px] md:w-[170px]"
-            initial={{ opacity: 0, scale: 0.5 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ type: "spring", stiffness: 120, damping: 18 }}
+            initial={false}
+            animate={
+              revealed
+                ? { opacity: 1, scale: 1 }
+                : { opacity: 0, scale: 0.88 }
+            }
+            transition={{ type: "spring", stiffness: 120, damping: 20, delay: revealed ? 0.1 : 0 }}
           >
             <motion.div
               className="absolute inset-[14px] rounded-full bg-gradient-to-br from-[#ffe566] via-[#f5d020] to-[#e8a020] md:inset-[16px]"
-              animate={{ scale: [1, 1.04, 1] }}
+              animate={revealed ? { scale: [1, 1.04, 1] } : { scale: 1 }}
               transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
               style={{ boxShadow: "0 0 40px rgba(245,208,32,0.5)" }}
             />
@@ -58,8 +67,13 @@ export function InvitationScene({ showText, onConfirmClick }: InvitationScenePro
             </div>
           </motion.div>
 
-          {showText && <InvitationLines onConfirmClick={onConfirmClick} />}
-        </div>
+          <motion.div
+            layout
+            transition={{ layout: { duration: 0.45, ease: [0.22, 1, 0.36, 1] } }}
+          >
+            {showText && <InvitationLines onConfirmClick={onConfirmClick} />}
+          </motion.div>
+        </motion.div>
       </motion.div>
     </div>
   );

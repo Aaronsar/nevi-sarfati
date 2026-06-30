@@ -53,7 +53,11 @@ export default function InvitationPage() {
       </section>
 
       <section ref={invitationRef} className="relative w-full shrink-0">
-        <InvitationScene showText={showText} onConfirmClick={handleConfirmClick} />
+        <InvitationScene
+          revealed={phase !== "sun"}
+          showText={showText}
+          onConfirmClick={handleConfirmClick}
+        />
       </section>
 
       <section ref={formRef} id="rsvp" className="tubby-land relative w-full shrink-0 px-5 py-16 md:px-8 md:py-24">
