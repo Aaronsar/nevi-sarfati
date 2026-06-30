@@ -14,26 +14,26 @@ type LineConfig = {
 const LINES: LineConfig[] = [
   {
     text: "Aaron et Neorah Sarfati",
-    className: "text-2xl md:text-3xl font-light tracking-wide text-gold-dark",
+    className: "text-2xl md:text-3xl font-semibold tracking-wide text-gold-dark",
     delay: 0,
     duration: 1.1,
     variant: "rise",
   },
   {
     text: "vous invitent",
-    className: "text-sm md:text-base font-light italic text-text-muted/80",
+    className: "text-base md:text-lg font-light italic text-gold/80",
     delay: 0.7,
     duration: 0.55,
     variant: "fade",
-    spacing: "-mt-1",
+    spacing: "-mt-0.5",
   },
   {
     text: "au Pidyon Haben de leur fils",
-    className: "text-xs md:text-sm font-medium tracking-[0.28em] text-text-muted uppercase",
+    className: "text-xs md:text-sm font-medium tracking-[0.28em] text-gold-dark/70 uppercase",
     delay: 1.3,
     duration: 0.75,
     variant: "fade",
-    spacing: "mt-5 mb-2",
+    spacing: "mt-4 mb-1",
   },
   {
     text: "Névi Baroukh Sarfati",
@@ -53,11 +53,11 @@ const LINES: LineConfig[] = [
   },
   {
     text: "Confirmez votre présence",
-    className: "text-[11px] md:text-xs font-medium tracking-[0.35em] text-gold-dark/70 uppercase",
+    className: "text-[11px] md:text-xs font-semibold tracking-[0.35em] text-gold uppercase",
     delay: 5.4,
     duration: 0.7,
     variant: "reveal",
-    spacing: "mt-8",
+    spacing: "mt-6",
   },
 ];
 
