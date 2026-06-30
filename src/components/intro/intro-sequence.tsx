@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { SunHero } from "./sun-hero";
-import { InvitationLines } from "./invitation-lines";
+import { InvitationLines, INVITATION_TEXT_DURATION_MS } from "./invitation-lines";
 
 type Phase = "sun" | "bloom" | "text" | "exit";
 
@@ -31,12 +31,12 @@ export function IntroSequence({ onComplete, onScrollToForm }: IntroSequenceProps
         setPhase("text");
         setShowText(true);
       }, 4800),
-      setTimeout(() => setPhase("exit"), 11500),
+      setTimeout(() => setPhase("exit"), 4800 + INVITATION_TEXT_DURATION_MS + 800),
       setTimeout(() => {
         document.body.style.overflow = "";
         onComplete();
         onScrollToForm();
-      }, 12800),
+      }, 4800 + INVITATION_TEXT_DURATION_MS + 2100),
     ];
     return () => timers.forEach(clearTimeout);
   }, [onComplete, onScrollToForm]);
