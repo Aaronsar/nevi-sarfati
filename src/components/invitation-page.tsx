@@ -22,13 +22,21 @@ export default function InvitationPage() {
   }, [phase]);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
+    const scrollTimer = setTimeout(() => {
       setPhase("invitation");
-      setShowText(true);
       lockScroll(false);
       smoothScrollTo(invitationRef.current, { duration: 1800, delay: 200 });
     }, SUN_DISPLAY_MS);
-    return () => clearTimeout(timer);
+
+    // Attendre la fin du scroll avant de lancer le texte
+    const textTimer = setTimeout(() => {
+      setShowText(true);
+    }, SUN_DISPLAY_MS + 3500);
+
+    return () => {
+      clearTimeout(scrollTimer);
+      clearTimeout(textTimer);
+    };
   }, []);
 
   const handleConfirmClick = useCallback(() => {

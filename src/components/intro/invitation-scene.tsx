@@ -34,35 +34,14 @@ export function InvitationScene({ showText, onConfirmClick }: InvitationScenePro
         transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
       >
         <div className="tubby-card overflow-hidden rounded-3xl px-5 py-6 md:p-8">
-          {/* Soleil Névi — grand */}
           <motion.div
             className="relative mx-auto mb-5 flex h-[140px] w-[140px] items-center justify-center md:mb-6 md:h-[170px] md:w-[170px]"
-            initial={{ opacity: 0, scale: 0.7 }}
+            initial={{ opacity: 0, scale: 0.5 }}
             animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+            transition={{ type: "spring", stiffness: 120, damping: 18 }}
           >
             <motion.div
-              className="absolute inset-0"
-              animate={{ rotate: 360 }}
-              transition={{ duration: 80, repeat: Infinity, ease: "linear" }}
-            >
-              {Array.from({ length: 12 }).map((_, i) => (
-                <div
-                  key={i}
-                  className="absolute top-1/2 left-1/2 origin-bottom"
-                  style={{
-                    width: 3,
-                    height: 72,
-                    transform: `rotate(${(360 / 12) * i}deg) translateY(-50%)`,
-                    background:
-                      "linear-gradient(to top, transparent, rgba(245,208,32,0.5), rgba(255,230,100,0.8))",
-                  }}
-                />
-              ))}
-            </motion.div>
-
-            <motion.div
-              className="absolute inset-2 rounded-full bg-gradient-to-br from-[#ffe566] via-[#f5d020] to-[#e8a020]"
+              className="absolute inset-[14px] rounded-full bg-gradient-to-br from-[#ffe566] via-[#f5d020] to-[#e8a020] md:inset-[16px]"
               animate={{ scale: [1, 1.04, 1] }}
               transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
               style={{ boxShadow: "0 0 40px rgba(245,208,32,0.5)" }}
@@ -79,7 +58,7 @@ export function InvitationScene({ showText, onConfirmClick }: InvitationScenePro
             </div>
           </motion.div>
 
-          <InvitationLines visible={showText} onConfirmClick={onConfirmClick} />
+          {showText && <InvitationLines onConfirmClick={onConfirmClick} />}
         </div>
       </motion.div>
     </div>
